@@ -24,7 +24,7 @@ xTrain, xTest, yTrain, yTest = train_test_split(x, y, test_size=0.2, random_stat
 # Feature scaling
 scaler = StandardScaler()
 xTrain = scaler.fit_transform(xTrain)
-XTest = scaler.transform(xTest)
+xTest = scaler.transform(xTest)
 
 # fitted SVM model 
 svm = SVC(kernel='linear', random_state=42, probability=True)
