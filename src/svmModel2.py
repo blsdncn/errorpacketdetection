@@ -36,7 +36,7 @@ xTrain = scaler.fit_transform(xTrain)
 xTest = scaler.transform(xTest)
 
 # Fitted SVM model 
-svm = SVC(kernel='linear', random_state=42, probability=True)
+svm = SVC(kernel='linear', random_state=42, probability=True, tol=1e-3, max_iter=500000)
 svm.fit(xTrain, yTrain)
 
 # Calibrated to get probability values for log loss calculation
