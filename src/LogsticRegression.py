@@ -4,10 +4,15 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, log_loss
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-
+import os
+import pickle as pkl
 #replace with your own path to test
 #data will be the csvfile we open to read from the data for the model
-data = pd.read_csv(r'C:\Users\yousi\OneDrive\Desktop\archive\CTU-IoT-Malware-Capture-1-1conn.log.labeled.csv', sep='|')
+current_dir = os.path.dirname(__file__)
+data_dir = os.path.join(current_dir, '..', 'data')
+data_path = os.path.join(data_dir, 'CTU-IoT-Malware-Capture-1-1conn.log.labeled.csv')
+output_dir = os.path.join(current_dir, '..','models')
+data = pd.read_csv(data_path, delimiter='|')
 
 # select the desired columns
 dataColumns = ['duration', 'orig_bytes', 'resp_bytes','orig_pkts', 'orig_ip_bytes', 'resp_pkts','resp_ip_bytes']
@@ -39,8 +44,11 @@ xTestScaled = scaler.transform(xTest)
 
 # create and train the LR(logistic regression) model with the desired iteration s
 # fit the model to the scaled training data
-model = LogisticRegression(max_iter=500000, solver='liblinear')
+model = LogisticRegression(max_iter=500000, solver='sag')
 model.fit(xTrainScaled, yTrain)
+
+with open(os.path.join(output_dir,'lrSaved.pkl'),"wb") as file:
+    pkl.dump(model,file) 
 
 # Predict/evaluate the model
 predictions = model.predict(xTestScaled)

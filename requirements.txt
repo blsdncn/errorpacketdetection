@@ -2,3 +2,4 @@ python=3.9.19
 scikit-learn
 matplotlib
 pandas
+pickle
