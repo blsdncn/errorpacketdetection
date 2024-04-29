@@ -99,4 +99,3 @@ dependencies:
   - zipp=3.17.0=py39h06a4308_0
   - zlib=1.2.13=h5eee18b_0
   - zstd=1.5.5=hc292b87_0
-prefix: /home/blaise/miniconda3/envs/MLNetwork_env
