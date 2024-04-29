@@ -7,6 +7,7 @@ from sklearn.calibration import CalibratedClassifierCV
 import matplotlib.pyplot as plt
 import pickle as pkl
 import os
+import util
 
 # Load file with the correct delimiter
 current_dir = os.path.dirname(__file__)
@@ -51,28 +52,33 @@ calibrated_svm = CalibratedClassifierCV(svm, method='sigmoid', cv=5)
 calibrated_svm.fit(xTrain, yTrain)
 model = calibrated_svm
 
-with open(os.path.join(output_dir,'svmSaved.pkl'),"wb") as file:
-    pkl.dump(model,file)
+#with open(os.path.join(output_dir,'svmSaved.pkl'),"wb") as file:
+#    pkl.dump(model,file)
+
+util.save_model(model,os.path.join(output_dir,'svmSaved.pkl'))
 
 # Predictions and probability
-yPrediction = calibrated_svm.predict(xTest)
-yProbability = calibrated_svm.predict_proba(xTest)[:, 1]
+yPrediction, yProbability, metrics = util.evaluate_model(model,xTest,yTest)
+
+#yPrediction = calibrated_svm.predict(xTest)
+#yProbability = calibrated_svm.predict_proba(xTest)[:, 1]
 
 # Getting and displaying metrics
-accuracy = accuracy_score(yTest, yPrediction)
-precision = precision_score(yTest, yPrediction)
-recall = recall_score(yTest, yPrediction)
-log_loss_val = log_loss(yTest, yProbability)
+#accuracy = accuracy_score(yTest, yPrediction)
+#precision = precision_score(yTest, yPrediction)
+#recall = recall_score(yTest, yPrediction)
+#log_loss_val = log_loss(yTest, yProbability)
 
 print(f'\nModel Evaluation Metrics:')
-print(f'Accuracy: {accuracy:.2f}')
-print(f'Precision: {precision:.2f}')
-print(f'Recall: {recall:.2f}')
-print(f'Log Loss: {log_loss_val:.2f}')
+print(f"Accuracy: {metrics['Accuracy']:.2f}")
+print(f"Precision: {metrics['Precision']:.2f}")
+print(f"Recall: {metrics['Recall']:.2f}")
+print(f"Log Loss: {metrics['Log Loss']:.2f}")
 
 # Confusion Matrix
-cm = confusion_matrix(yTest, yPrediction)
-disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-disp.plot()
-plt.title('Confusion Matrix for SVM Model')
-plt.show()
+util.plot_confusion_matrix(yTest,yPrediction)
+#cm = confusion_matrix(yTest, yPrediction)
+#disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+#disp.plot()
+#plt.title('Confusion Matrix for SVM Model')
+#plt.show()

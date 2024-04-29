@@ -6,6 +6,7 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import os
 import pickle as pkl
+import util
 #replace with your own path to test
 #data will be the csvfile we open to read from the data for the model
 current_dir = os.path.dirname(__file__)
@@ -44,27 +45,33 @@ xTestScaled = scaler.transform(xTest)
 
 # create and train the LR(logistic regression) model with the desired iteration s
 # fit the model to the scaled training data
-model = LogisticRegression(max_iter=500000, solver='sag')
+model = LogisticRegression(max_iter=500000, solver='liblinear')
 model.fit(xTrainScaled, yTrain)
 
-with open(os.path.join(output_dir,'lrSaved.pkl'),"wb") as file:
-    pkl.dump(model,file) 
+#with open(os.path.join(output_dir,'lrSaved.pkl'),"wb") as file:
+#    pkl.dump(model,file) 
+
+
+util.save_model(model,os.path.join(output_dir,'svmSaved.pkl'))
+predictions, probabilities, metrics = util.evaluate_model(model,xTestScaled,yTest)
 
 # Predict/evaluate the model
-predictions = model.predict(xTestScaled)
-probabilities = model.predict_proba(xTestScaled)  # Needed for log loss
+#predictions = model.predict(xTestScaled)
+#probabilities = model.predict_proba(xTestScaled)  # Needed for log loss
 
 # Get the metrics so we can display it
-accuracy = accuracy_score(yTest, predictions)
-cm = confusion_matrix(yTest, predictions)
-cr = classification_report(yTest, predictions)
-loss = log_loss(yTest, probabilities)
+#accuracy = accuracy_score(yTest, predictions)
+#cm = confusion_matrix(yTest, predictions)
+#cr = classification_report(yTest, predictions)
+#loss = log_loss(yTest, probabilities)
 
-print(f'Accuracy: {accuracy}')
-print("Confusion Matrix:")
-print(cm)
-print(cr)
-print(f'Log Loss: {loss}')
+print(f'\nModel Evaluation Metrics:')
+print(f"Accuracy: {metrics['Accuracy']:.2f}")
+print(f"Precision: {metrics['Precision']:.2f}")
+print(f"Recall: {metrics['Recall']:.2f}")
+print(f"Log Loss: {metrics['Log Loss']:.2f}")
+
+util.plot_confusion_matrix(yTest,predictions)
 
 # plotting convergence curve
 # loss vs epochs
